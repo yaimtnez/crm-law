@@ -21,6 +21,9 @@ This project doesn't have a test runner configured yet. When needed, you can use
 
 ## Description of folder structure
 
+### `features/`
+Contains the main business domains or functional modules of the application. Each feature folder encapsulates all files related to a specific functionality (such as Dashboard, Statistics, Emails, Tasks, etc.), including its own pages, components, hooks, and services. This modular structure keeps features isolated, scalable, and easier to maintain, allowing teams to work independently on different parts of the system without conflicts.
+
 ### `Components/`
 Contains the reusable UI components that make up the application's visual interface. Each component is in a separate file with descriptive PascalCase names, facilitating reuse and maintainability. They are small, reusable UI components, such as buttons, inputs, modals, lists, etc. They should be independent and stateless.
 
