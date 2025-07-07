@@ -7,10 +7,16 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useNavigate } from 'react-router';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+
+  const navigate = useNavigate();
+  const manualNaviate = () =>{
+    navigate("/dashboard")
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -95,6 +101,7 @@ export default function LoginPage() {
               </div>
 
               <Button
+                onClick={manualNaviate}
                 type="submit"
                 className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5"
                 disabled={isLoading}
