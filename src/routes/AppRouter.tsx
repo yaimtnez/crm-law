@@ -1,32 +1,20 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 
-import AuthLayout from "@/features/auth/layouts/AuthLayout";
-import LoginPage from "@/features/auth/pages/LoginPage";
-import { NotFoundPage } from "@/pages/NotFoundPage";
 import { LoadingPage } from "@/pages/LoadingPage";
 
 const DashboardRouter = lazy(() => import("@/routes/DashboardRouter").then(module => ({ default: module.DashboardRouter })));
+const AuthRouter = lazy(() => import("@/routes/AuthRouter").then(module => ({ default: module.AuthRouter })));
 
 export const AppRouter = () => (
     <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<AuthLayout />}>
-                <Route index element={<Navigate to="/login" />} />
-                <Route path="login" element={<LoginPage />} />
-            </Route>
+        <Suspense fallback={<LoadingPage />}>
+            <Routes>
+                <Route path="/account/*" element={<AuthRouter />} />
+                <Route path="/*" element={<DashboardRouter />} />
 
-            <Route
-                path="/*"
-                element={
-                    <Suspense fallback={<LoadingPage />}>
-                        <DashboardRouter />
-                    </Suspense>
-                }
-            />
-
-            <Route path="/" element={<Navigate to="/login" />} />
-            <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+                <Route path="*" element={<Navigate to="/account/login" replace />} />
+            </Routes>
+        </Suspense>
     </BrowserRouter>
 );

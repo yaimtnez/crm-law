@@ -24,7 +24,7 @@ export default function DashboardLayout() {
     };
 
     const manualNaviate = () => {
-        navigate("/login")
+        navigate("/account/login")
     }
 
     return (

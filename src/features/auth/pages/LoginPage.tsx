@@ -15,7 +15,7 @@ export default function LoginPage() {
 
   const navigate = useNavigate();
   const manualNaviate = () =>{
-    navigate("/dashboard")
+    navigate("/dashboard", { replace: true })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
