@@ -1,15 +1,31 @@
-import { useState } from "react"
+import { Outlet, useLocation, useNavigate } from "react-router"
 
-import { Users, Plus, Download, Bell, Settings, LogOut, Home, UserCheck, BarChart3, FileText, Building2 } from "lucide-react"
+import { Plus, Download, Bell, Settings, LogOut, Home, Building2, Calendar, Mail, BarChart2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
-
+const menuItems = [
+    { id: "dashboard", name: "Dashboard", icon: Home },
+    { id: "schedules", name: "Schedules", icon: Calendar },
+    { id: "email", name: "Email", icon: Mail },
+    { id: "task", name: "Task", icon: BarChart2 },
+];
 
 export default function DashboardLayout() {
-    const [activeTab, setActiveTab] = useState("dashboard")
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const currentTab = location.pathname.split("/").pop() || "dashboard";
+
+    const handleClick = (id: string) => {
+        navigate(`/${id}`);
+    };
+
+    const manualNaviate = () => {
+        navigate("/login")
+    }
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -28,17 +44,11 @@ export default function DashboardLayout() {
 
                     {/* Navigation */}
                     <nav className="flex-1 space-y-1 px-4 py-4">
-                        {[
-                            { id: "dashboard", name: "Dashboard", icon: Home },
-                            { id: "leads", name: "Leads", icon: Users },
-                            { id: "customers", name: "Clientes", icon: UserCheck },
-                            { id: "analytics", name: "Análisis", icon: BarChart3 },
-                            { id: "reports", name: "Reportes", icon: FileText },
-                        ].map((item) => (
+                        {menuItems.map((item) => (
                             <button
                                 key={item.id}
-                                onClick={() => setActiveTab(item.id)}
-                                className={`flex w-full items-center space-x-3 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${activeTab === item.id
+                                onClick={() => handleClick(item.id)}
+                                className={`flex w-full items-center space-x-3 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${currentTab === item.id
                                     ? "bg-green-100 text-green-700"
                                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                                     }`}
@@ -71,7 +81,7 @@ export default function DashboardLayout() {
                                     <Settings className="mr-2 h-4 w-4" />
                                     Configuración
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={manualNaviate}>
                                     <LogOut className="mr-2 h-4 w-4" />
                                     Cerrar Sesión
                                 </DropdownMenuItem>
@@ -104,7 +114,12 @@ export default function DashboardLayout() {
                             </Button>
                         </div>
                     </div>
-                </header>              
+                </header>
+
+                {/* Dashboard Content */}
+                <main className="p-6">
+                    <Outlet />
+                </main>
             </div>
         </div>
     )

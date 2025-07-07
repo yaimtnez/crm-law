@@ -6,21 +6,21 @@ import LoginPage from "@/features/auth/pages/LoginPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { LoadingPage } from "@/pages/LoadingPage";
 
-const DashboardLayout = lazy(() => import('@/features/dashboard/layouts/DasboardLayout'));
+const DashboardRouter = lazy(() => import("@/routes/DashboardRouter").then(module => ({ default: module.DashboardRouter })));
 
 export const AppRouter = () => (
     <BrowserRouter>
         <Routes>
             <Route path="/" element={<AuthLayout />}>
-                <Route index path="login" element={<LoginPage />} />
-                <Route path="/" element={<Navigate to="/login" />} />
+                <Route index element={<Navigate to="/login" />} />
+                <Route path="login" element={<LoginPage />} />
             </Route>
 
             <Route
                 path="/*"
                 element={
                     <Suspense fallback={<LoadingPage />}>
-                        <DashboardLayout />
+                        <DashboardRouter />
                     </Suspense>
                 }
             />
