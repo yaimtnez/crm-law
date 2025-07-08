@@ -1,32 +1,36 @@
-import type React from "react"
-import { useState } from "react"
+import type React from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
 
-import { Eye, EyeOff, Mail, Lock, Building2 } from "lucide-react"
+import { Eye, EyeOff, Mail, Lock, Building2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { useNavigate } from 'react-router';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { loginUser } from "@/redux/authSlice";
+import { type AppDispatch, type RootState } from '../../../redux/store';
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const manualNaviate = () =>{
-    navigate("/dashboard", { replace: true })
-  }
+
+  const { status, error } = useSelector((state: RootState) => state.auth);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    // Simulate login
-    setTimeout(() => {
-      setIsLoading(false)
-      window.location.href = "/dashboard"
-    }, 1500)
-  }
+    e.preventDefault();
+    const resultAction = await dispatch(loginUser({ email, password }));
+
+    if (loginUser.fulfilled.match(resultAction)) {
+      navigate("/dashboard");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-gray-100 flex items-center justify-center p-4">
@@ -57,6 +61,8 @@ export default function LoginPage() {
                   <Input
                     id="email"
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="usuario@empresa.com"
                     className="pl-10 border-gray-200 focus:border-green-500 focus:ring-green-500"
                     required
@@ -73,6 +79,8 @@ export default function LoginPage() {
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     className="pl-10 pr-10 border-gray-200 focus:border-green-500 focus:ring-green-500"
                     required
@@ -87,40 +95,21 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <input
-                    id="remember"
-                    type="checkbox"
-                    className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                  />
-                  <Label htmlFor="remember" className="text-sm text-gray-600">
-                    Recordarme
-                  </Label>
-                </div>              
-              </div>
+              {error && (
+                <p className="text-sm text-red-600">{error}</p>
+              )}
 
               <Button
-                onClick={manualNaviate}
                 type="submit"
                 className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5"
-                disabled={isLoading}
+                disabled={status === "loading"}
               >
-                {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
+                {status === "loading" ? "Iniciando sesión..." : "Iniciar Sesión"}
               </Button>
             </form>
-
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                ¿No tienes una cuenta?{" "}               
-              </p>
-            </div>
           </CardContent>
         </Card>
-       
       </div>
     </div>
-  )
+  );
 }
-
-
