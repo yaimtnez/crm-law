@@ -16,7 +16,7 @@ export const loginUser = createAsyncThunk(
                 tenants: ['TenantA', 'TenantB'],
             };
         } else {
-            return thunkAPI.rejectWithValue('Credenciales incorrectas');
+            return thunkAPI.rejectWithValue('Invalid login or password');
         }
     }
 );
@@ -57,6 +57,9 @@ const authSlice = createSlice({
                 state.activeTenant = action.payload;
             }
         },
+        closeError(state) {
+            state.error = null;
+        },
     },
     extraReducers(builder) {
         builder
@@ -80,5 +83,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { logout, switchTenant } = authSlice.actions;
+export const { logout, switchTenant, closeError } = authSlice.actions;
 export default authSlice.reducer;
