@@ -30,9 +30,9 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-    user: null,
-    tenants: [],
-    activeTenant: null,
+    user: localStorage.getItem('authUser') ? JSON.parse(localStorage.getItem('authUser') || '{}') : null,
+    tenants: localStorage.getItem('authTenants') ? JSON.parse(localStorage.getItem('authTenants') || '{}') : [],
+    activeTenant: localStorage.getItem('authActiveTenant') ? JSON.parse(localStorage.getItem('authActiveTenant') || '{}') : null,
     status: 'idle',
     error: null,
 };
@@ -47,8 +47,10 @@ const authSlice = createSlice({
             state.activeTenant = null;
             state.status = 'idle';
             state.error = null;
-            
+
             localStorage.removeItem('authUser');
+            localStorage.removeItem('authTenants');
+            localStorage.removeItem('authActiveTenant');
         },
         switchTenant(state, action: PayloadAction<string>) {
             if (state.tenants.includes(action.payload)) {
@@ -67,6 +69,9 @@ const authSlice = createSlice({
                 state.user = { id: action.payload.id, email: action.payload.email };
                 state.tenants = action.payload.tenants;
                 state.activeTenant = action.payload.tenants[0];
+                localStorage.setItem('authUser', JSON.stringify(state.user));
+                localStorage.setItem('authTenants', JSON.stringify(state.tenants));
+                localStorage.setItem('authActiveTenant', JSON.stringify(state.activeTenant));
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.status = 'failed';

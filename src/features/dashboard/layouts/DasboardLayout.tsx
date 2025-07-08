@@ -5,6 +5,8 @@ import { Plus, Download, Bell, Settings, LogOut, Home, Building2, Calendar, Mail
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useDispatch } from "react-redux"
+import { logout } from "@/redux/authSlice"
 
 const menuItems = [
     { id: "dashboard", name: "Dashboard", icon: Home },
@@ -16,6 +18,7 @@ const menuItems = [
 export default function DashboardLayout() {
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch = useDispatch();
 
     const currentTab = location.pathname.split("/").pop() || "dashboard";
 
@@ -23,9 +26,10 @@ export default function DashboardLayout() {
         navigate(`/${id}`);
     };
 
-    const manualNaviate = () => {
-        navigate("/account/login")
-    }
+    const handleLogout = () => {
+        dispatch(logout());
+        navigate("/account/login", { replace: true });
+    };
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -81,7 +85,7 @@ export default function DashboardLayout() {
                                     <Settings className="mr-2 h-4 w-4" />
                                     Configuración
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={manualNaviate}>
+                                <DropdownMenuItem onClick={handleLogout}>
                                     <LogOut className="mr-2 h-4 w-4" />
                                     Cerrar Sesión
                                 </DropdownMenuItem>
